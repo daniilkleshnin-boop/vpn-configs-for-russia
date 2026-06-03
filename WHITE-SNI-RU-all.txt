@@ -1,11 +1,7 @@
 # profile-title: 🏳️ БЕЛЫЕ СПИСКИ 🏳️ WHITE LISTS | SNI-RU
 # profile-update-interval: 1
-# Date/Time: 2026-06-03 / 07:05 (Moscow)
-# Количество: 5
+# Date/Time: 2026-06-03 / 08:43 (Moscow)
+# Количество: 1
 # For more info and VPN-configs - visit: www.github.com/igareck/vpn-configs-for-russia
 
-vless://af555232-0c87-487b-bcb0-87a378a1a371@185.33.87.62:443?Telegram=@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad&encryption=none&security=reality&sni=www.kinopoisk.ru&fp=chrome&pbk=CJ1B3eJWwwIUmz2BGFis0tNpas8fnwXTeri-dkhCclo&sid=aabbccdd&type=xhttp&host=www.kinopoisk.ru&path=%2FdF6yXt9bRj3Lh2qVp7Nw&mode=auto#%F0%9F%87%BA%F0%9F%87%B8%20United%20States%20%5BSNI-RU%5D%20www.kinopoisk.ru
-vless://af555232-0c87-487b-bcb0-87a378a1a371@185.33.87.62:443?type=xhttp&security=reality&path=/dF6yXt9bRj3Lh2qVp7Nw&sni=www.kinopoisk.ru&fp=chrome&pbk=CJ1B3eJWwwIUmz2BGFis0tNpas8fnwXTeri-dkhCclo&sid=aabbccdd#%F0%9F%87%BA%F0%9F%87%B8%20United%20States%20%5BSNI-RU%5D%20www.kinopoisk.ru
-vless://af555232-0c87-487b-bcb0-87a378a1a371@usa6.odavpn.online:443?Telegram=@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad&encryption=none&security=reality&sni=www.kinopoisk.ru&fp=chrome&pbk=CJ1B3eJWwwIUmz2BGFis0tNpas8fnwXTeri-dkhCclo&sid=aabbccdd&type=xhttp&host=www.kinopoisk.ru&path=%2FdF6yXt9bRj3Lh2qVp7Nw&mode=auto#%F0%9F%87%BA%F0%9F%87%B8%20United%20States%20%5BSNI-RU%5D%20www.kinopoisk.ru
-vless://af555232-0c87-487b-bcb0-87a378a1a371@usa6.odavpn.online:443?Telegram=@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad&Telegram=@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad&encryption=none&security=reality&sni=www.kinopoisk.ru&fp=chrome&pbk=CJ1B3eJWwwIUmz2BGFis0tNpas8fnwXTeri-dkhCclo&sid=aabbccdd&type=xhttp&path=%2FdF6yXt9bRj3Lh2qVp7Nw#%F0%9F%87%BA%F0%9F%87%B8%20United%20States%20%5BSNI-RU%5D%20www.kinopoisk.ru
-vless://6e84b643-1c90-41e7-9028-ce4dea28c21c@pro-ru-84.emrata.top:443?type=tcp&security=reality&sni=ads.x5.ru&fp=firefox&flow=xtls-rprx-vision&pbk=AAZjVvbC7AwPKot_1ygO5VMpN7XYifCA7lG0RNR5sEk#%F0%9F%87%B7%F0%9F%87%BA%20Russia%20%7C%20%F0%9F%8C%90%20%5BSNI-RU%5D%20ads.x5.ru
+vless://6ed3c281-cf63-4501-9bae-b34c1ce00854@nl-pro.maxg.ch:443?encryption=none&flow=xtls-rprx-vision&type=tcp&security=reality&sni=ads.x5.ru&fp=firefox&pbk=QlQDX8jxqNJE1qtZmaZCDxE7gZqcLlOKdWd5YKNv0Gg&sid=555b9b33d083d3f1&spx=%2Fcdn-cgi%2Ftrace#%F0%9F%87%B3%F0%9F%87%B1%20The%20Netherlands%20%7C%20%F0%9F%8C%90%20%5BSNI-RU%5D%20ads.x5.ru

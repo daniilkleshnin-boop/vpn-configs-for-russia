@@ -1,11 +1,26 @@
 # profile-title: 🏳️ БЕЛЫЕ СПИСКИ 🏳️ WHITE LISTS | SNI-RU
 # profile-update-interval: 1
-# Date/Time: 2026-06-05 / 14:46 (Moscow)
-# Количество: 0
+# Date/Time: 2026-06-05 / 16:42 (Moscow)
+# Количество: 1
 # For more info and VPN-configs - visit: www.github.com/igareck/vpn-configs-for-russia
 
 mixed-port: 7890
 allow-lan: false
 mode: rule
 log-level: warning
-proxies: []
+proxies:
+- name: 🇦🇹 Austria [SNI-RU] id.vk.com
+  type: vless
+  server: "\x73\x73\x2e\x6c\x6c\x30\x6c\x6c\x2e\x76\x69\x70"
+  port: 2096
+  uuid: "\x63\x30\x39\x66\x30\x30\x62\x63\x2d\x65\x66\x34\x63\x2d\x34\x34\x31\x65\x2d\x38\x33\x31\x37\x2d\x31\x37\x61\x63\x39\x35\x34\x63\x35\x34\x61\x64"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x69\x64\x2e\x76\x6b\x2e\x63\x6f\x6d"
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
+  network: grpc
+  grpc-opts:
+    grpc-service-name: vless-grpc-reality

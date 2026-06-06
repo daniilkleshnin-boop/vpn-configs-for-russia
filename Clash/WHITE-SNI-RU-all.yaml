@@ -1,7 +1,7 @@
 # profile-title: 🏳️ БЕЛЫЕ СПИСКИ 🏳️ WHITE LISTS | SNI-RU
 # profile-update-interval: 1
-# Date/Time: 2026-06-06 / 01:39 (Moscow)
-# Количество: 2
+# Date/Time: 2026-06-06 / 03:22 (Moscow)
+# Количество: 3
 # For more info and VPN-configs - visit: www.github.com/igareck/vpn-configs-for-russia
 
 mixed-port: 7890
@@ -9,6 +9,20 @@ allow-lan: false
 mode: rule
 log-level: warning
 proxies:
+- name: 🇨🇿 Czechia [SNI-RU] api-maps.yandex.ru
+  type: vless
+  server: "\x31\x30\x33\x2e\x31\x31\x39\x2e\x31\x39\x2e\x32\x30\x31"
+  port: 2087
+  uuid: "\x33\x34\x37\x61\x35\x36\x63\x32\x2d\x61\x34\x35\x33\x2d\x34\x62\x33\x32\x2d\x38\x36\x63\x64\x2d\x37\x35\x32\x32\x39\x34\x33\x64\x66\x38\x38\x63"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x61\x70\x69\x2d\x6d\x61\x70\x73\x2e\x79\x61\x6e\x64\x65\x78\x2e\x72\x75"
+  client-fingerprint: qq
+  reality-opts:
+    public-key: vZuBWF0YzlKI0fJWxU6hmOLHHQ5Qb1kf35HbZDcFCH4
+    short-id: 493c3d4e37c23c28
+  flow: xtls-rprx-vision
 - name: 🇪🇪 Estonia | 🌐 [SNI-RU] api-maps.yandex.ru
   type: vless
   server: "\x34\x35\x2e\x38\x33\x2e\x31\x38\x32\x2e\x31\x30\x32"
@@ -23,17 +37,19 @@ proxies:
     public-key: vZuBWF0YzlKI0fJWxU6hmOLHHQ5Qb1kf35HbZDcFCH4
     short-id: 493c3d4e37c23c28
   flow: xtls-rprx-vision
-- name: 🇪🇪 Estonia | 🌐 [SNI-RU] max.ru
+- name: 🇪🇪 Estonia [SNI-RU] ads.x5.ru
   type: vless
-  server: "\x39\x35\x73\x75\x62\x2e\x67\x68\x6f\x73\x74\x2d\x6c\x61\x6e\x2e\x63\x6f\x6d"
-  port: 8442
-  uuid: "\x65\x30\x31\x37\x35\x30\x33\x38\x2d\x65\x63\x36\x66\x2d\x34\x37\x36\x61\x2d\x38\x37\x34\x35\x2d\x31\x35\x38\x32\x38\x66\x37\x37\x34\x31\x35\x32"
+  server: "\x33\x31\x2e\x31\x37\x37\x2e\x31\x31\x31\x2e\x31\x38\x32"
+  port: 8443
+  uuid: "\x31\x32\x31\x64\x64\x64\x31\x38\x2d\x31\x65\x38\x61\x2d\x34\x39\x35\x34\x2d\x62\x36\x64\x62\x2d\x33\x34\x66\x65\x34\x65\x64\x63\x36\x64\x32\x30"
   udp: true
   encryption: none
   tls: true
-  servername: "\x6d\x61\x78\x2e\x72\x75"
-  client-fingerprint: chrome
+  servername: "\x61\x64\x73\x2e\x78\x35\x2e\x72\x75"
+  client-fingerprint: qq
   reality-opts:
-    public-key: TRB-7JE8MNZDBFSduYp9syU1AdpLez1MJ7dPrHeGFwg
-    short-id: a7f9106ba66e4796
-  flow: xtls-rprx-vision
+    public-key: sytCI7S-VsZw4N3KUAeIU86dJCRHlbEWBOVaA02sllg
+    short-id: a1b2c3d4
+  network: grpc
+  grpc-opts:
+    grpc-service-name: grpc

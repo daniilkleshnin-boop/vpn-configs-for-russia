@@ -1,7 +1,7 @@
 # profile-title: 🏳️ БЕЛЫЕ СПИСКИ 🏳️ WHITE LISTS | SNI-RU
 # profile-update-interval: 1
-# Date/Time: 2026-06-23 / 01:34 (Moscow)
-# Количество: 32
+# Date/Time: 2026-06-23 / 04:22 (Moscow)
+# Количество: 42
 # For more info and VPN-configs - visit: www.github.com/igareck/vpn-configs-for-russia
 
 mixed-port: 7890
@@ -254,6 +254,20 @@ proxies:
   encryption: none
   tls: true
   servername: "\x61\x70\x69\x2d\x6d\x61\x70\x73\x2e\x79\x61\x6e\x64\x65\x78\x2e\x72\x75"
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: 3hiGU9oArRYulbhHEJa7nTfx1k0XL6ItE_xs-8Yi_Uc
+    short-id: 17a2a5e0
+  flow: xtls-rprx-vision
+- name: '🇮🇹 Italy [SNI-RU] api-maps.yandex.ru #2'
+  type: vless
+  server: "\x38\x34\x2e\x31\x37\x2e\x35\x38\x2e\x31\x33\x33"
+  port: 443
+  uuid: "\x39\x32\x65\x34\x31\x63\x32\x33\x2d\x34\x62\x33\x39\x2d\x34\x36\x34\x61\x2d\x62\x62\x66\x66\x2d\x36\x33\x65\x66\x38\x34\x66\x33\x31\x37\x64\x61"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x61\x70\x69\x2d\x6d\x61\x70\x73\x2e\x79\x61\x6e\x64\x65\x78\x2e\x72\x75"
   client-fingerprint: firefox
   reality-opts:
     public-key: 3hiGU9oArRYulbhHEJa7nTfx1k0XL6ItE_xs-8Yi_Uc
@@ -274,6 +288,20 @@ proxies:
     short-id: 56d5a8fb
   flow: xtls-rprx-vision
 - name: 🇵🇱 Poland [SNI-RU] api-maps.yandex.ru
+  type: vless
+  server: "\x31\x35\x32\x2e\x32\x33\x33\x2e\x34\x33\x2e\x37\x31"
+  port: 443
+  uuid: "\x39\x32\x65\x34\x31\x63\x32\x33\x2d\x34\x62\x33\x39\x2d\x34\x36\x34\x61\x2d\x62\x62\x66\x66\x2d\x36\x33\x65\x66\x38\x34\x66\x33\x31\x37\x64\x61"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x61\x70\x69\x2d\x6d\x61\x70\x73\x2e\x79\x61\x6e\x64\x65\x78\x2e\x72\x75"
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: DaQjKlJbC2ksBaItYb0fjt1xkIcxRh_STIQ4rkrydjY
+    short-id: 7db44191
+  flow: xtls-rprx-vision
+- name: '🇵🇱 Poland [SNI-RU] api-maps.yandex.ru #2'
   type: vless
   server: "\x31\x35\x32\x2e\x32\x33\x33\x2e\x34\x33\x2e\x37\x31"
   port: 443
@@ -321,6 +349,23 @@ proxies:
   xhttp-opts:
     path: "\x2f\x74\x44\x6a\x6b\x65\x75\x78\x79\x51\x50\x55\x44\x71\x46\x38\x77\x54\x32"
     mode: auto
+- name: '🇵🇱 Poland [SNI-RU] www.kinopoisk.ru #3'
+  type: vless
+  server: "\x70\x6f\x6c\x36\x2e\x6f\x64\x61\x76\x70\x6e\x2e\x6f\x6e\x6c\x69\x6e\x65"
+  port: 443
+  uuid: "\x38\x35\x35\x33\x61\x65\x39\x30\x2d\x32\x61\x38\x31\x2d\x34\x39\x33\x61\x2d\x62\x30\x35\x30\x2d\x38\x65\x65\x37\x39\x63\x38\x64\x62\x65\x34\x63"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x77\x77\x77\x2e\x6b\x69\x6e\x6f\x70\x6f\x69\x73\x6b\x2e\x72\x75"
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: ice5ApDYceTGVoxODC51F4RVW0HBoykvMpgL4_qLABw
+    short-id: aabbccdd
+  network: xhttp
+  xhttp-opts:
+    path: "\x2f\x74\x44\x6a\x6b\x65\x75\x78\x79\x51\x50\x55\x44\x71\x46\x38\x77\x54\x32"
+    mode: auto
 - name: 🇵🇹 Portugal [SNI-RU] api-maps.yandex.ru
   type: vless
   server: "\x31\x35\x32\x2e\x32\x33\x33\x2e\x36\x32\x2e\x31\x33\x35"
@@ -344,12 +389,40 @@ proxies:
   encryption: none
   tls: true
   servername: "\x61\x70\x69\x2d\x6d\x61\x70\x73\x2e\x79\x61\x6e\x64\x65\x78\x2e\x72\x75"
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: DxMGwax3l0UxFYZE349Fs15huyc4Jwzj6MG7Qrj0HQ0
+    short-id: 735093d7
+  flow: xtls-rprx-vision
+- name: '🇷🇴 Romania [SNI-RU] api-maps.yandex.ru #2'
+  type: vless
+  server: "\x39\x35\x2e\x31\x37\x33\x2e\x31\x39\x39\x2e\x31\x31\x30"
+  port: 443
+  uuid: "\x39\x32\x65\x34\x31\x63\x32\x33\x2d\x34\x62\x33\x39\x2d\x34\x36\x34\x61\x2d\x62\x62\x66\x66\x2d\x36\x33\x65\x66\x38\x34\x66\x33\x31\x37\x64\x61"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x61\x70\x69\x2d\x6d\x61\x70\x73\x2e\x79\x61\x6e\x64\x65\x78\x2e\x72\x75"
   client-fingerprint: firefox
   reality-opts:
     public-key: DxMGwax3l0UxFYZE349Fs15huyc4Jwzj6MG7Qrj0HQ0
     short-id: 735093d7
   flow: xtls-rprx-vision
 - name: 🇸🇰 Slovakia [SNI-RU] api-maps.yandex.ru
+  type: vless
+  server: "\x31\x35\x36\x2e\x31\x34\x36\x2e\x34\x30\x2e\x32\x30\x31"
+  port: 443
+  uuid: "\x39\x32\x65\x34\x31\x63\x32\x33\x2d\x34\x62\x33\x39\x2d\x34\x36\x34\x61\x2d\x62\x62\x66\x66\x2d\x36\x33\x65\x66\x38\x34\x66\x33\x31\x37\x64\x61"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x61\x70\x69\x2d\x6d\x61\x70\x73\x2e\x79\x61\x6e\x64\x65\x78\x2e\x72\x75"
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: WMO-BNY1BX2nNlOOQgxLP4D3H-OnE2ypbXlbSMjLRVM
+    short-id: e764f0ea
+  flow: xtls-rprx-vision
+- name: '🇸🇰 Slovakia [SNI-RU] api-maps.yandex.ru #2'
   type: vless
   server: "\x31\x35\x36\x2e\x31\x34\x36\x2e\x34\x30\x2e\x32\x30\x31"
   port: 443
@@ -377,7 +450,35 @@ proxies:
     public-key: fJGvGs_j23gTjn5q5QWCOsD3TeIdOqkpSLv7geS6AQI
     short-id: 2b8c5943
   flow: xtls-rprx-vision
+- name: 🇸🇪 Sweden [SNI-RU] api-maps.yandex.ru
+  type: vless
+  server: "\x31\x39\x35\x2e\x31\x38\x31\x2e\x31\x36\x36\x2e\x37\x33"
+  port: 443
+  uuid: "\x39\x32\x65\x34\x31\x63\x32\x33\x2d\x34\x62\x33\x39\x2d\x34\x36\x34\x61\x2d\x62\x62\x66\x66\x2d\x36\x33\x65\x66\x38\x34\x66\x33\x31\x37\x64\x61"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x61\x70\x69\x2d\x6d\x61\x70\x73\x2e\x79\x61\x6e\x64\x65\x78\x2e\x72\x75"
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: UtAnh-HlChjh3afrhycDmeOSFs7cZBjIJx0qG7NB5Rc
+    short-id: b419319c
+  flow: xtls-rprx-vision
 - name: 🇨🇭 Switzerland [SNI-RU] api-maps.yandex.ru
+  type: vless
+  server: "\x31\x33\x38\x2e\x31\x39\x39\x2e\x32\x30\x2e\x34"
+  port: 443
+  uuid: "\x39\x32\x65\x34\x31\x63\x32\x33\x2d\x34\x62\x33\x39\x2d\x34\x36\x34\x61\x2d\x62\x62\x66\x66\x2d\x36\x33\x65\x66\x38\x34\x66\x33\x31\x37\x64\x61"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x61\x70\x69\x2d\x6d\x61\x70\x73\x2e\x79\x61\x6e\x64\x65\x78\x2e\x72\x75"
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: sT3IlhEi8k7BA0jYkn5TkJ8HcX3_FZ7USnfnqCAGrhw
+    short-id: 1750fe7d
+  flow: xtls-rprx-vision
+- name: '🇨🇭 Switzerland [SNI-RU] api-maps.yandex.ru #2'
   type: vless
   server: "\x31\x33\x38\x2e\x31\x39\x39\x2e\x32\x30\x2e\x34"
   port: 443
@@ -392,6 +493,20 @@ proxies:
     short-id: 1750fe7d
   flow: xtls-rprx-vision
 - name: 🇹🇷 Turkey [SNI-RU] api-maps.yandex.ru
+  type: vless
+  server: "\x31\x35\x32\x2e\x32\x33\x33\x2e\x35\x33\x2e\x37"
+  port: 443
+  uuid: "\x39\x32\x65\x34\x31\x63\x32\x33\x2d\x34\x62\x33\x39\x2d\x34\x36\x34\x61\x2d\x62\x62\x66\x66\x2d\x36\x33\x65\x66\x38\x34\x66\x33\x31\x37\x64\x61"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x61\x70\x69\x2d\x6d\x61\x70\x73\x2e\x79\x61\x6e\x64\x65\x78\x2e\x72\x75"
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: DAdWhCSXRRcho_XopxBKq2-KDupbSY_i2r-FJCy58kY
+    short-id: 5a3874f1
+  flow: xtls-rprx-vision
+- name: '🇹🇷 Turkey [SNI-RU] api-maps.yandex.ru #2'
   type: vless
   server: "\x31\x35\x32\x2e\x32\x33\x33\x2e\x35\x33\x2e\x37"
   port: 443
@@ -420,6 +535,48 @@ proxies:
     short-id: 157ce3ba
   flow: xtls-rprx-vision
 - name: 🇷🇺 Russia [SNI-RU] max.ru
+  type: vless
+  server: "\x34\x35\x2e\x38\x2e\x32\x32\x38\x2e\x31\x31\x30"
+  port: 443
+  uuid: "\x31\x38\x36\x35\x35\x31\x31\x32\x2d\x66\x64\x38\x61\x2d\x34\x34\x65\x37\x2d\x61\x33\x30\x63\x2d\x33\x37\x33\x38\x38\x63\x30\x35\x38\x31\x36\x62"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x6d\x61\x78\x2e\x72\x75"
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: kIwNoNzk1uJnZD1evWxURZskv9ZY0aGoUjrAbn3uVXQ
+    short-id: 4d3ff920673f7534
+  flow: xtls-rprx-vision
+- name: '🇷🇺 Russia [SNI-RU] max.ru #2'
+  type: vless
+  server: "\x34\x35\x2e\x38\x2e\x32\x32\x38\x2e\x31\x31\x30"
+  port: 443
+  uuid: "\x31\x38\x36\x35\x35\x31\x31\x32\x2d\x66\x64\x38\x61\x2d\x34\x34\x65\x37\x2d\x61\x33\x30\x63\x2d\x33\x37\x33\x38\x38\x63\x30\x35\x38\x31\x36\x62"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x6d\x61\x78\x2e\x72\x75"
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: kIwNoNzk1uJnZD1evWxURZskv9ZY0aGoUjrAbn3uVXQ
+    short-id: 4d3ff920673f7534
+  flow: xtls-rprx-vision
+- name: '🇷🇺 Russia [SNI-RU] max.ru #3'
+  type: vless
+  server: "\x34\x35\x2e\x38\x2e\x32\x32\x38\x2e\x31\x31\x30"
+  port: 443
+  uuid: "\x31\x38\x36\x35\x35\x31\x31\x32\x2d\x66\x64\x38\x61\x2d\x34\x34\x65\x37\x2d\x61\x33\x30\x63\x2d\x33\x37\x33\x38\x38\x63\x30\x35\x38\x31\x36\x62"
+  udp: true
+  encryption: none
+  tls: true
+  servername: "\x6d\x61\x78\x2e\x72\x75"
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: kIwNoNzk1uJnZD1evWxURZskv9ZY0aGoUjrAbn3uVXQ
+    short-id: 4d3ff920673f7534
+  flow: xtls-rprx-vision
+- name: '🇷🇺 Russia [SNI-RU] max.ru #4'
   type: vless
   server: "\x34\x35\x2e\x38\x2e\x32\x32\x38\x2e\x31\x31\x30"
   port: 443
@@ -476,20 +633,3 @@ proxies:
     public-key: rZgu2lJcC2yrYnx66znee-Z75mW6m4TRfWt7_neoEVI
     short-id: 1c74cf626ef50bb3
   flow: xtls-rprx-vision
-- name: 🌐 Anycast-IP | 🇩🇪 🇰🇷 [SNI-RU] okko.tv
-  type: vless
-  server: "\x31\x36\x31\x2e\x31\x30\x34\x2e\x34\x38\x2e\x32\x37"
-  port: 443
-  uuid: "\x33\x36\x35\x36\x32\x62\x39\x39\x2d\x61\x61\x64\x64\x2d\x34\x65\x33\x38\x2d\x62\x35\x36\x36\x2d\x32\x34\x65\x30\x64\x32\x31\x39\x62\x31\x64\x36"
-  udp: true
-  encryption: none
-  tls: true
-  servername: "\x6f\x6b\x6b\x6f\x2e\x74\x76"
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: tFKuLI3W0VZ7IxAL6hFQhD7DWmxAl0_NCjLya_I64zQ
-    short-id: b2d4f6e8
-  network: xhttp
-  xhttp-opts:
-    path: "\x2f\x62\x65\x72\x6b\x65\x74\x67\x6f"
-    mode: auto

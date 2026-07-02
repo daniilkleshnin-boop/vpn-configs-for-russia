@@ -1,4 +1,4 @@
-name: 2-Hour Happ Filter Sync
+name: 2-Hour Happ Filter & Sort Sync
 
 on:
   schedule:
@@ -9,56 +9,66 @@ permissions:
   contents: write
 
 jobs:
-  filter-and-encode:
+  filter-sort-and-encode:
     runs-on: ubuntu-latest
     steps:
       - name: Открываем репозиторий
         uses: actions/checkout@v4
 
-      - name: Сбор, фильтрация и кодирование живых прокси
+      - name: Сбор, замер скорости и сортировка прокси
         run: |
           > temp_raw.txt
-          # Собираем все прокси из твоих файлов
+          # Собираем все прокси из файлов
           cat *BLACK*.txt >> temp_raw.txt 2>/dev/null || true
           cat *VLESS*.txt >> temp_raw.txt 2>/dev/null || true
           cat *SS*.txt >> temp_raw.txt 2>/dev/null || true
           
-          # Очищаем от пустых строк и мусора
+          # Очищаем от пустых строк
           cat temp_raw.txt | grep -E '^([a-zA-Z0-9_-]+)://' > all_nodes.txt
           
-          > live_nodes.txt
+          > timed_nodes.txt
           
-          # УМНЫЙ ФИЛЬТР: Робот проверяет каждый адрес на доступность порта
+          # Замеряем пинг каждого сервера
           while read -r line; do
-            # Извлекаем домен/IP и порт из строки прокси-ссылки
             if [[ "$line" =~ @([^:]+):([0-9]+) ]]; then
               host="${BASH_REMATCH[1]}"
               port="${BASH_REMATCH[2]}"
               
-              # Пингуем порт сервера с таймаутом в 2 секунды
+              # Засекаем время до проверки (в наносекундах)
+              start_time=$(date +%s%N)
+              
               if nc -z -w 2 "$host" "$port" 2>/dev/null; then
-                echo "$line" >> live_nodes.txt
+                end_time=$(date +%s%N)
+                # Считаем разницу в миллисекундах
+                ping_ms=$(( (end_time - start_time) / 1000000 ))
+                
+                # Записываем в формате: "пинг линк"
+                echo "$ping_ms $line" >> timed_nodes.txt
               fi
             else
-              # Если формат нестандартный, оставляем его на всякий случай
-              echo "$line" >> live_nodes.txt
+              # Без порта кидаем в самый конец с пингом 9999
+              echo "9999 $line" >> timed_nodes.txt
             fi
           done < all_nodes.txt
 
-          # Если нашли живые прокси — кодируем их в Base64 для Happ
-          if [ -s live_nodes.txt ]; then
-            base64 -w 0 live_nodes.txt > happ_final.txt
-            echo "Фильтрация завершена. Только живые прокси сохранены!"
+          > live_sorted_nodes.txt
+          if [ -s timed_nodes.txt ]; then
+            # Сортируем по первой колонке (по пингу) от меньшего к большему
+            # и убираем цифры пинга, оставляя чистые прокси
+            sort -n timed_nodes.txt | cut -d' ' -f2- > live_sorted_nodes.txt
+            
+            # Кодируем отсортированный список в Base64 для Happ
+            base64 -w 0 live_sorted_nodes.txt > happ_final.txt
+            echo "Сортировка завершена! Самые быстрые прокси теперь сверху."
           else
-            # Если все упали, оставляем старый список, чтобы не ломать приложение
             cat all_nodes.txt | base64 -w 0 > happ_final.txt
-            echo "Предупреждение: Живых прокси не найдено, сохранен общий список."
+            echo "Живых прокси не найдено, сохранен базовый список."
           fi
 
       - name: Сохраняем изменения в репозиторий
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.email "github-actions[bot]@://github.com"
           git config --local user.name "github-actions[bot]"
           git add happ_final.txt
-          git commit -m "Очистка и синхронизация живых прокси [skip ci]" || echo "Изменений нет"
+          git commit -m "Сортировка и очистка прокси по пингу [skip ci]" || echo "Изменений нет"
           git push

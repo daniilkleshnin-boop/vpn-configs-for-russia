@@ -1,0 +1,34 @@
+name: 2-Hour Happ Sync
+
+on:
+  schedule:
+    - cron: '30 */2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  merge-and-encode:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Открываем репозиторий
+        uses: actions/checkout@v4
+
+      - name: Объединяем и кодируем в Base64
+        run: |
+          > temp_happ.txt
+          cat *BLACK*.txt >> temp_happ.txt 2>/dev/null || true
+          cat *VLESS*.txt >> temp_happ.txt 2>/dev/null || true
+          cat *SS*.txt >> temp_happ.txt 2>/dev/null || true
+          
+          cat temp_happ.txt | grep -E '^([a-zA-Z0-9_-]+)://' | base64 -w 0 > happ_final.txt
+          echo "Скрипт отработал!"
+
+      - name: Сохраняем изменения в репозиторий
+        run: |
+          git config --local user.email "github-actions[bot]@://github.com"
+          git config --local user.name "github-actions[bot]"
+          git add happ_final.txt
+          git commit -m "Синхронизация прокси для Happ [skip ci]" || echo "Изменений нет"
+          git push

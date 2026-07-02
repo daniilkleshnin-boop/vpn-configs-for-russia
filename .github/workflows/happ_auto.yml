@@ -1,74 +1,61 @@
-name: 2-Hour Happ Filter & Sort Sync
+name: 30-Min Happ Proxy Guard & Sync
 
 on:
   schedule:
-    - cron: '30 */2 * * *'
-  workflow_dispatch:
+    - cron: '*/30 * * * *' # Автоматический запуск каждые 30 минут
+  workflow_dispatch: # Кнопка ручного запуска в любое время
 
 permissions:
   contents: write
 
 jobs:
-  filter-sort-and-encode:
+  sync-and-filter:
     runs-on: ubuntu-latest
     steps:
-      - name: Открываем репозиторий
+      - name: Открываем твой репозиторий
         uses: actions/checkout@v4
 
-      - name: Сбор, замер скорости и сортировка прокси
+      - name: Скачиваем свежие файлы у автора igareck
+        run: |
+          # Робот сам идет к автору и забирает оригинальные файлы
+          curl -s "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/BLACK_SS+All_RUS.txt" -o BLACK_SS+All_RUS.txt || true
+          curl -s "https://githubusercontent.com" -o BLACK_VLESS_RUS.txt || true
+
+      - name: Режим стража - фильтрация живых портов
         run: |
           > temp_raw.txt
-          # Собираем все прокси из файлов
-          cat *BLACK*.txt >> temp_raw.txt 2>/dev/null || true
-          cat *VLESS*.txt >> temp_raw.txt 2>/dev/null || true
-          cat *SS*.txt >> temp_raw.txt 2>/dev/null || true
+          cat BLACK_SS+All_RUS.txt >> temp_raw.txt 2>/dev/null || true
+          cat BLACK_VLESS_RUS.txt >> temp_raw.txt 2>/dev/null || true
           
-          # Очищаем от пустых строк
+          # Очищаем строки от мусора
           cat temp_raw.txt | grep -E '^([a-zA-Z0-9_-]+)://' > all_nodes.txt
           
-          > timed_nodes.txt
-          
-          # Замеряем пинг каждого сервера
+          > live_nodes.txt
+          # Проверяем доступность портов (Таймаут 2 секунды)
           while read -r line; do
             if [[ "$line" =~ @([^:]+):([0-9]+) ]]; then
               host="${BASH_REMATCH[1]}"
               port="${BASH_REMATCH[2]}"
-              
-              # Засекаем время до проверки (в наносекундах)
-              start_time=$(date +%s%N)
-              
               if nc -z -w 2 "$host" "$port" 2>/dev/null; then
-                end_time=$(date +%s%N)
-                # Считаем разницу в миллисекундах
-                ping_ms=$(( (end_time - start_time) / 1000000 ))
-                
-                # Записываем в формате: "пинг линк"
-                echo "$ping_ms $line" >> timed_nodes.txt
+                echo "$line" >> live_nodes.txt
               fi
             else
-              # Без порта кидаем в самый конец с пингом 9999
-              echo "9999 $line" >> timed_nodes.txt
+              echo "$line" >> live_nodes.txt
             fi
           done < all_nodes.txt
 
-          > live_sorted_nodes.txt
-          if [ -s timed_nodes.txt ]; then
-            # Сортируем по первой колонке (по пингу) от меньшего к большему
-            # и убираем цифры пинга, оставляя чистые прокси
-            sort -n timed_nodes.txt | cut -d' ' -f2- > live_sorted_nodes.txt
-            
-            # Кодируем отсортированный список в Base64 для Happ
-            base64 -w 0 live_sorted_nodes.txt > happ_final.txt
-            echo "Сортировка завершена! Самые быстрые прокси теперь сверху."
+          # Кодируем только живые прокси в Base64 без изменения порядка (без сортировки)
+          if [ -s live_nodes.txt ]; then
+            base64 -w 0 live_nodes.txt > happ_final.txt
+            echo "Файлы обновлены у автора и успешно отфильтрованы!"
           else
             cat all_nodes.txt | base64 -w 0 > happ_final.txt
-            echo "Живых прокси не найдено, сохранен базовый список."
           fi
 
-      - name: Сохраняем изменения в репозиторий
+      - name: Сохраняем свежие файлы и готовый список в твой репозиторий
         run: |
-          git config --local user.email "github-actions[bot]@://github.com"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add happ_final.txt
-          git commit -m "Сортировка и очистка прокси по пингу [skip ci]" || echo "Изменений нет"
+          git add BLACK_SS+All_RUS.txt BLACK_VLESS_RUS.txt happ_final.txt
+          git commit -m "Синхронизация с автором и фильтрация портов [skip ci]" || echo "Изменений нет"
           git push

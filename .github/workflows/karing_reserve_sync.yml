@@ -1,4 +1,4 @@
-name: Karing Reserve FORCE Pure Sync
+name: Karing Reserve Python Fast Sync
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # Кнопка для ручного запуска
 
 permissions:
-  contents: write # Даем полные права на перезапись репозитория!
+  contents: write # Официальные права на запись файлов
 
 jobs:
   sync-sort-reserve:
@@ -17,23 +17,80 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Скачиваем резервные прокси у igareck
-        run: |
-          curl -s "https://githubusercontent.com" -o raw_reserve.txt || touch raw_reserve.txt
+      - name: Настройка Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-      - name: Быстрая очистка и подготовка списка
+      - name: Скачивание, проверка скорости и жесткая сортировка прокси
         run: |
-          touch temp_raw.txt
-          cat raw_reserve.txt > temp_raw.txt 2>/dev/null || true
-          cat temp_raw.txt | grep -E '^([a-zA-Z0-9_-]+)://' | sort -u > karing_reserve_final.txt || touch karing_reserve_final.txt
-          echo "Резервный список успешно собран и очищен!"
+          python -c "
+          import urllib.request
+          import socket
+          import time
+          import re
+
+          print('[+] Скачиваю оригинальный файл прокси...')
+          url = 'https://githubusercontent.com'
+          try:
+              req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+              with urllib.request.urlopen(req) as response:
+                  content = response.read().decode('utf-8', errors='ignore')
+          except Exception as e:
+              print('❌ Ошибка скачивания:', e)
+              content = ''
+
+          lines = content.split('\n')
+          valid_nodes = []
+          timed_nodes = []
+
+          # Находим все чистые прокси-строки
+          for line in lines:
+              line = line.strip()
+              if line and '://' in line:
+                  valid_nodes.append(line)
+
+          print(f'[+] Найдено {len(valid_nodes)} прокси для проверки.')
+
+          # Скоростная проверка портов через сокеты Python
+          for node in valid_nodes:
+              match = re.search(r'@([^:/]+):([0-9]+)', node)
+              if match:
+                  host = match.group(1)
+                  port = int(match.group(2))
+                  
+                  start = time.perf_counter()
+                  try:
+                      # Бьем точечно по порту с таймаутом 1.5 секунды
+                      sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                      sock.settimeout(1.5)
+                      sock.connect((host, port))
+                      sock.close()
+                      
+                      ping_ms = int((time.perf_counter() - start) * 1000)
+                      timed_nodes.append((ping_ms, node))
+                  except Exception:
+                      # Мертвые сервера отправляем в самый низ списка
+                      timed_nodes.append((9999, node))
+              else:
+                  timed_nodes.append((9998, node))
+
+          # Сортируем: самые быстрые с минимальным пингом — строго наверх!
+          timed_nodes.sort(key=lambda x: x[0])
+
+          # Записываем готовый отсортированный файл подписки
+          with open('karing_reserve_final.txt', 'w', encoding='utf-8') as f:
+              for ping, node in timed_nodes:
+                  f.write(node + '\n')
+          
+          print('✅ Резервный список успешно отсортирован и записан!')
+          "
 
       - name: Жесткое принудительное сохранение файлов на сайт
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add karing_reserve_final.txt
-          # МЫ ОКОНЧАТЕЛЬНО СТИРАЕМ СТАРЫЙ ТЕКСТ С SKIP CI
-          git commit -m "Ультимативное обновление Shadowsocks" --allow-empty
+          git commit -m "Ультимативное обновление резервных прокси через Python" --allow-empty
           git pull origin main --rebase
           git push origin main

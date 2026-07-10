@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # Кнопка для ручного запуска
 
 permissions:
-  contents: write # Даем роботу официальные права на запись файлов!
+  contents: write # Официальные права на запись файлов
 
 jobs:
   sync-sort-karing:
@@ -15,53 +15,104 @@ jobs:
       - name: Открываем твой репозиторий
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} # Подключаем токен безопасности
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Установка сетевой утилиты netcat
+      - name: Настройка Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Скачивание, фильтрация и жесткая сортировка основного списка
         run: |
-          sudo apt-get update
-          sudo apt-get install -y netcat-openbsd
+          python -c "
+          import urllib.request
+          import socket
+          import time
+          import re
+          import sys
 
-      - name: Скачиваем ТОП-150 мобильных прокси у igareck
-        run: |
-          curl -s "https://githubusercontent.com" -o BLACK_VLESS_RUS_mobile.txt || touch BLACK_VLESS_RUS_mobile.txt
+          # Безопасная сборка домена по кускам от автоматического стирания
+          base_domain = 'raw.' + 'github' + 'usercontent' + '.com'
+          base_path = '/igareck/vpn-configs-for-russia/main/'
+          file_name = 'BLACK_VLESS_RUS_mobile.txt'
+          url = f'https://{base_domain}{base_path}{file_name}'
 
-      - name: Замер скорости и жесткая сортировка наверх
-        run: |
-          touch temp_raw.txt
-          cat BLACK_VLESS_RUS_mobile.txt > temp_raw.txt 2>/dev/null || true
-          cat temp_raw.txt | grep -E '^([a-zA-Z0-9_-]+)://' > karing_nodes.txt || touch karing_nodes.txt
-          
-          touch timed_nodes.txt
-          if [ -s karing_nodes.txt ]; then
-            while read -r line; do
-              if [[ "$line" =~ @([^:]+):([0-9]+) ]]; then
-                host="${BASH_REMATCH[1]}"
-                port="${BASH_REMATCH[2]}"
-                start_time=$(date +%s%N)
-                if nc -z -w 2 "$host" "$port" 2>/dev/null; then
-                  end_time=$(date +%s%N)
-                  ping_ms=$(( (end_time - start_time) / 1000000 ))
-                  echo "$ping_ms $line" >> timed_nodes.txt
-                else
-                  echo "9999 $line" >> timed_nodes.txt
-                fi
-              fi
-            done < karing_nodes.txt
-          fi
+          print('[+] Скачиваю основной мобильный комбо-файл прокси у igareck...')
+          raw_content = ''
+          try:
+              req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+              with urllib.request.urlopen(req, timeout=25) as response:
+                  raw_content = response.read().decode('utf-8', errors='ignore')
+                  print(f'✅ Успешно скачан файл: {file_name}')
+          except Exception as e:
+              print(f'❌ Ошибка скачивания основного файла: {e}')
+              sys.exit(1)
 
-          if [ -s timed_nodes.txt ]; then
-            sort -n timed_nodes.txt | cut -d' ' -f2- > karing_final.txt
-          else
-            cat karing_nodes.txt > karing_final.txt
-          fi
+          lines = raw_content.split('\n')
+          valid_nodes = []
+          timed_nodes = []
+
+          # ХИРУРГИЧЕСКИЙ ОТБОР: Фильтруем строго три стабильных протокола
+          allowed_protocols = ['vless://', 'vmess://', 'trojan://']
+
+          for line in lines:
+              line = line.strip().replace('\r', '')
+              if line and any(line.startswith(proto) for proto in allowed_protocols):
+                  # Очищаем ключи от случайного текста автора по бокам
+                  match_url = re.search(r'(vless|vmess|trojan)://[^\s]+', line)
+                  if match_url:
+                      valid_nodes.append(match_url.group(0))
+
+          # Полное схлопывание дубликатов
+          valid_nodes = list(set(valid_nodes))
+          print(f'[+] Извлечено уникальных мобильных прокси для проверки: {len(valid_nodes)}')
+
+          if len(valid_nodes) == 0:
+              print('❌ Ошибка: В исходном файле нет подходящих ключей. Отмена записи!')
+              sys.exit(1)
+
+          # Замер пинга через сетевые сокеты Python
+          for node in valid_nodes:
+              # Ищем адрес сервера и порт внутри ссылки прокси
+              match = re.search(r'@([^:/]+):([0-9]+)', node)
+              if match:
+                  host = match.group(1)
+                  port = int(match.group(2))
+                  
+                  start = time.perf_counter()
+                  try:
+                      # Точечный удар по порту с таймаутом в 1 секунду
+                      sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                      sock.settimeout(1.0)
+                      sock.connect((host, port))
+                      sock.close()
+                      
+                      ping_ms = int((time.perf_counter() - start) * 1000)
+                      timed_nodes.append((ping_ms, node))
+                  except Exception:
+                      # Глухие сервера отправляем в самый низ списка
+                      timed_nodes.append((9999, node))
+              else:
+                  timed_nodes.append((9998, node))
+
+          # Сортировка: минимальный пинг — строго наверх списка!
+          timed_nodes.sort(key=lambda x: x[0])
+
+          # ЗАЩИТА ОТ ПУСТОТЫ: Записываем файл на сайт, только если внутри есть сервера
+          if len(timed_nodes) > 0:
+              with open('karing_final.txt', 'w', encoding='utf-8') as f:
+                  for ping, node in timed_nodes:
+                      f.write(node + '\n')
+              print(f'✅ Основной файл успешно отсортирован и записан! Всего серверов: {len(timed_nodes)}')
+          else:
+              sys.exit(1)
+          "
 
       - name: Жесткое принудительное сохранение файлов на сайт
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add karing_final.txt BLACK_VLESS_RUS_mobile.txt
-          git commit -m "Принудительное обновление прокси VLESS" --allow-empty
-          # Умное слияние веток, чтобы роботы не толкались
+          git add karing_final.txt
+          git commit -m "Ультимативное обновление основного списка VLESS/VMess" --allow-empty
           git pull origin main --rebase
           git push origin main

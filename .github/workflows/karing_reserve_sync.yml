@@ -52,19 +52,22 @@ jobs:
           valid_nodes = []
           timed_nodes = []
 
-          # ХИРУРГИЧЕСКАЯ ФИЛЬТРАЦИЯ: Забираем ТОЛЬКО чистые ссылки (без текста, смайликов и мусора)
+          # ИСПРАВЛЕННАЯ ФИЛЬТРАЦИЯ: Ищем протокол в любой части строки, игнорируя мусор перед ним
           for line in lines:
-              line = line.strip()
-              # Проверяем, что строка начинается строго с прокси-протокола
-              if line and any(line.startswith(proto) for proto in ['ss://', 'vless://', 'vmess://', 'trojan://', 'tuic://', 'hysteria2://']):
-                  valid_nodes.append(line)
+              line = line.strip().replace('\r', '') # Очищаем скрытые маркеры Windows
+              if line and any(proto in line for proto in ['ss://', 'vless://', 'vmess://', 'trojan://', 'tuic://', 'hysteria2://']):
+                  # Вытаскиваем чистую ссылку, отрезая случайный текст в начале строки
+                  match_url = re.search(r'(ss|vless|vmess|trojan|tuic|hysteria2)://[^\s]+', line)
+                  if match_url:
+                      valid_nodes.append(match_url.group(0))
 
           print(f'[+] Найдено чистых прокси: {len(valid_nodes)}')
 
           if len(valid_nodes) == 0:
+              print('❌ Ошибка: Ссылки не найдены, отмена!')
               sys.exit(1)
 
-          # Скоростная проверка портов
+          # Скоростная проверка портов через сокеты Python
           for node in valid_nodes:
               match = re.search(r'@([^:/]+):([0-9]+)', node)
               if match:
@@ -85,15 +88,15 @@ jobs:
               else:
                   timed_nodes.append((9998, node))
 
-          # Жесткая сортировка по пингу
-          timed_nodes.sort(key=lambda x: x[0])
+          # Жесткая сортировка по пингу: самые быстрые — строго наверх!
+          timed_nodes.sort(key=lambda x: x)
 
-          # Записываем файл БЕЗ лишнего мусора, только чистые ссылки!
+          # Записываем готовый отсортированный файл подписки
           if len(timed_nodes) > 0:
               with open('karing_reserve_final.txt', 'w', encoding='utf-8') as f:
                   for ping, node in timed_nodes:
                       f.write(node + '\n')
-              print('✅ Файл успешно очищен и записан!')
+              print('✅ Файл успешно очищен, отсортирован и записан!')
           else:
               sys.exit(1)
           "
@@ -103,6 +106,6 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add karing_reserve_final.txt
-          git commit -m "Очистка структуры файла подписки" --allow-empty
+          git commit -m "Исправление: Умный захват ссылок прокси" --allow-empty
           git pull origin main --rebase
           git push origin main

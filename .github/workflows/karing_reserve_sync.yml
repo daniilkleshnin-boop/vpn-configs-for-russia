@@ -1,4 +1,4 @@
-name: 1-Hour Karing Reserve Mobile Sync
+name: Karing Reserve FORCE Pure Sync
 
 on:
   schedule:
@@ -33,7 +33,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add karing_reserve_final.txt
-          # МЫ УБРАЛИ ВСЕ ТЕГИ ТИПА [skip ci], ЧТОБЫ СНЯТЬ БЛОКИРОВКУ СЕТИ!
-          git commit -m "Финальный чистый пробив резервных прокси Shadowsocks" --allow-empty
+          # МЫ ОКОНЧАТЕЛЬНО СТИРАЕМ СТАРЫЙ ТЕКСТ С SKIP CI
+          git commit -m "Ультимативное обновление Shadowsocks" --allow-empty
           git pull origin main --rebase
           git push origin main

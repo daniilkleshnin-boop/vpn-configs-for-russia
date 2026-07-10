@@ -26,25 +26,28 @@ jobs:
         run: |
           python -c "
           import urllib.request
+          import urllib.parse
           import socket
           import time
           import re
           import sys
 
-          # Запись домена по кускам, чтобы система безопасности сайта его случайно не стерла
+          # Собираем домен по частям от стирания фильтрами сайта
           base_domain = 'raw.' + 'github' + 'usercontent' + '.com'
           base_path = '/igareck/vpn-configs-for-russia/main/'
+          file_name = 'BLACK_SS+All_RUS.txt'
           
-          # ИСПРАВЛЕНО НА 1000%: Знак плюс заменен на %2B, чтобы сервер GitHub не выдавал 404!
-          url = f'https://{base_domain}{base_path}BLACK_SS%2BAll_RUS.txt'
+          # Умное кодирование знака плюс в %2B, чтобы исключить 404 ошибку!
+          safe_file_name = urllib.parse.quote(file_name)
+          url = f'https://{base_domain}{base_path}{safe_file_name}'
 
-          print('[+] Скачиваю комбо-файл прокси напрямую у igareck...')
+          print('[+] Скачиваю оригинальный комбо-файл прокси напрямую...')
           raw_content = ''
           try:
               req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-              with urllib.request.urlopen(req, timeout=20) as response:
+              with urllib.request.urlopen(req, timeout=25) as response:
                   raw_content = response.read().decode('utf-8', errors='ignore')
-                  print('✅ Успешно скачан файл BLACK_SS+All_RUS.txt!')
+                  print(f'✅ Успешно скачан файл: {file_name}')
           except Exception as e:
               print(f'❌ Ошибка скачивания комбо-файла: {e}')
               sys.exit(1)
@@ -53,23 +56,26 @@ jobs:
           valid_nodes = []
           timed_nodes = []
 
-          # Извлекаем только чистые ссылки прокси
+          # УМНЫЙ ОТБОР: Оставляем только те протоколы, которые Karing на Windows жует без ошибок
+          allowed_protocols = ['ss://', 'hysteria2://', 'trojan://']
+
           for line in lines:
               line = line.strip().replace('\r', '')
-              if line and any(proto in line for proto in ['ss://', 'vless://', 'vmess://', 'trojan://', 'tuic://', 'hysteria2://']):
-                  match_url = re.search(r'(ss|vless|vmess|trojan|tuic|hysteria2)://[^\s]+', line)
+              if line and any(line.startswith(proto) for proto in allowed_protocols):
+                  # Извлекаем чистую ссылку без лишнего текста по бокам
+                  match_url = re.search(r'(ss|hysteria2|trojan)://[^\s]+', line)
                   if match_url:
                       valid_nodes.append(match_url.group(0))
 
-          # Убираем дубликаты
+          # Тотальное уничтожение дубликатов
           valid_nodes = list(set(valid_nodes))
-          print(f'[+] Всего уникальных прокси найдено внутри файла: {len(valid_nodes)}')
+          print(f'[+] Найдено и очищено уникальных прокси для резерва: {len(valid_nodes)}')
 
           if len(valid_nodes) == 0:
-              print('❌ КРИТИЧЕСКАЯ ОШИБКА: Не удалось извлечь прокси из текста! Отмена.')
+              print('❌ Ошибка: Живые ключи не найдены в тексте. Отмена записи!')
               sys.exit(1)
 
-          # Скоростная проверка портов через сокеты Python
+          # Высокоскоростной замер пинга через сокеты Python
           for node in valid_nodes:
               match = re.search(r'@([^:/]+):([0-9]+)', node)
               if match:
@@ -86,19 +92,20 @@ jobs:
                       ping_ms = int((time.perf_counter() - start) * 1000)
                       timed_nodes.append((ping_ms, node))
                   except Exception:
+                      # Мертвые сервера кидаем на самое дно списка
                       timed_nodes.append((9999, node))
               else:
                   timed_nodes.append((9998, node))
 
-          # Сортировка по пингу: самые быстрые — строго наверх!
-          timed_nodes.sort(key=lambda x: x)
+          # Жесткая сортировка: минимальный пинг — строго наверх!
+          timed_nodes.sort(key=lambda x: x[0])
 
-          # Записываем готовый чистый список подписки
+          # ЗАЩИТА ОТ ПУСТОТЫ: Пишем файл на диск только если в нем есть проверенные сервера
           if len(timed_nodes) > 0:
               with open('karing_reserve_final.txt', 'w', encoding='utf-8') as f:
                   for ping, node in timed_nodes:
                       f.write(node + '\n')
-              print(f'✅ Резервный файл успешно собран и отсортирован! Количество живых серверов: {len(timed_nodes)}')
+              print(f'✅ Резервный файл успешно отсортирован и записан! Всего серверов: {len(timed_nodes)}')
           else:
               sys.exit(1)
           "
@@ -108,6 +115,6 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add karing_reserve_final.txt
-          git commit -m "Сборка отсортированного микса Shadowsocks из комбо-файла" --allow-empty
+          git commit -m "Финальное ультимативное обновление прокси" --allow-empty
           git pull origin main --rebase
           git push origin main

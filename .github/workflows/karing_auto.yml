@@ -15,7 +15,12 @@ jobs:
       - name: Открываем твой репозиторий
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} # Подключаем системный токен безопасности
+          token: ${{ secrets.GITHUB_TOKEN }} # Подключаем токен безопасности
+
+      - name: Установка сетевой утилиты netcat
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y netcat-openbsd
 
       - name: Скачиваем ТОП-150 мобильных прокси у igareck
         run: |
@@ -56,6 +61,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add karing_final.txt BLACK_VLESS_RUS_mobile.txt
-          # Разрешаем коммит, даже если список серверов остался прежним
           git commit -m "Принудительное обновление прокси VLESS" --allow-empty
+          # Умное слияние веток, чтобы роботы не толкались
+          git pull origin main --rebase
           git push origin main

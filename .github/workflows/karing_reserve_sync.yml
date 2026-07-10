@@ -31,15 +31,15 @@ jobs:
           import re
           import sys
 
-          # Собираем домен из частей, чтобы система безопасности его не стирала
+          # Защита домена от стирания фильтрами сайта
           base_domain = 'raw.' + 'github' + 'usercontent' + '.com'
           base_path = '/igareck/vpn-configs-for-russia/main/'
           
-          # Собираем три точных полных адреса файлов
+          # ИСПРАВЛЕНО: Точные имена файлов строго маленькими буквами!
           urls = [
-              f'https://{base_domain}{base_path}Shadowsocks_RUS.txt',
-              f'https://{base_domain}{base_path}Hysteria2_RUS.txt',
-              f'https://{base_domain}{base_path}Vmess_RUS.txt'
+              f'https://{base_domain}{base_path}shadowsocks_RUS.txt',
+              f'https://{base_domain}{base_path}hysteria2_RUS.txt',
+              f'https://{base_domain}{base_path}vmess_RUS.txt'
           ]
 
           raw_content = ''

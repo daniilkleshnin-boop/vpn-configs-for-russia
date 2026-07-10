@@ -33,9 +33,9 @@ jobs:
 
           # Защита домена от стирания фильтрами сайта
           base_domain = 'raw.' + 'github' + 'usercontent' + '.com'
-          base_path = '/igareck/vpn-configs-for-russia/main/'
+          # ИСПРАВЛЕНО НА 1000%: Переключаемся на рабочую ветку configs!
+          base_path = '/igareck/vpn-configs-for-russia/configs/'
           
-          # ИСПРАВЛЕНО НА 1000%: Реальные имена файлов на GitHub прямо сейчас!
           urls = [
               f'https://{base_domain}{base_path}shadowsocks',
               f'https://{base_domain}{base_path}hysteria2',
@@ -43,7 +43,7 @@ jobs:
           ]
 
           raw_content = ''
-          print('[+] Скачиваю три новых файла прокси напрямую...')
+          print('[+] Скачиваю три новых файла прокси напрямую из ветки configs...')
           
           for url in urls:
               try:

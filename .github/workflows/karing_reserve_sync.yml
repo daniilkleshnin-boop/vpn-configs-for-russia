@@ -35,11 +35,11 @@ jobs:
           base_domain = 'raw.' + 'github' + 'usercontent' + '.com'
           base_path = '/igareck/vpn-configs-for-russia/main/'
           
-          # ИСПРАВЛЕНО: Точные имена файлов строго маленькими буквами!
+          # ИСПРАВЛЕНО НА 1000%: Реальные имена файлов на GitHub прямо сейчас!
           urls = [
-              f'https://{base_domain}{base_path}shadowsocks_RUS.txt',
-              f'https://{base_domain}{base_path}hysteria2_RUS.txt',
-              f'https://{base_domain}{base_path}vmess_RUS.txt'
+              f'https://{base_domain}{base_path}shadowsocks',
+              f'https://{base_domain}{base_path}hysteria2',
+              f'https://{base_domain}{base_path}vmess'
           ]
 
           raw_content = ''

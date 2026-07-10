@@ -29,28 +29,42 @@ jobs:
           import socket
           import time
           import re
+          import sys
 
-          print('[+] Скачиваю оригинальный файл прокси...')
-          url = 'https://githubusercontent.com'
-          try:
-              req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-              with urllib.request.urlopen(req) as response:
-                  content = response.read().decode('utf-8', errors='ignore')
-          except Exception as e:
-              print('❌ Ошибка скачивания:', e)
-              content = ''
+          content = ''
+          # Список зеркал на случай падения DNS у GitHub
+          urls = [
+              'https://githubusercontent.com',
+              'https://githack.com',
+              'https://jsdelivr.net'
+          ]
+
+          print('[+] Пытаюсь скачать оригинальный файл прокси через зеркала...')
+          for url in urls:
+              try:
+                  req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                  with urllib.request.urlopen(req, timeout=10) as response:
+                      content = response.read().decode('utf-8', errors='ignore')
+                  if content and '://' in content:
+                      print(f'✅ Успешно скачано через: {url}')
+                      break
+              except Exception as e:
+                  print(f'⚠️ Зеркало выдало сбой, пробую следующее... ({e})')
 
           lines = content.split('\n')
           valid_nodes = []
           timed_nodes = []
 
-          # Находим все чистые прокси-строки
           for line in lines:
               line = line.strip()
               if line and '://' in line:
                   valid_nodes.append(line)
 
           print(f'[+] Найдено {len(valid_nodes)} прокси для проверки.')
+
+          if len(valid_nodes) == 0:
+              print('❌ КРИТИЧЕСКАЯ ОШИБКА: Не удалось получить прокси ни через одно зеркало. Отмена записи!')
+              sys.exit(1)
 
           # Скоростная проверка портов через сокеты Python
           for node in valid_nodes:
@@ -61,29 +75,30 @@ jobs:
                   
                   start = time.perf_counter()
                   try:
-                      # Бьем точечно по порту с таймаутом 1.5 секунды
                       sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                      sock.settimeout(1.5)
+                      sock.settimeout(1.2)
                       sock.connect((host, port))
                       sock.close()
                       
                       ping_ms = int((time.perf_counter() - start) * 1000)
                       timed_nodes.append((ping_ms, node))
                   except Exception:
-                      # Мертвые сервера отправляем в самый низ списка
                       timed_nodes.append((9999, node))
               else:
                   timed_nodes.append((9998, node))
 
-          # Сортируем: самые быстрые с минимальным пингом — строго наверх!
+          # Жесткая сортировка по пингу: быстрые — строго наверх!
           timed_nodes.sort(key=lambda x: x[0])
 
-          # Записываем готовый отсортированный файл подписки
-          with open('karing_reserve_final.txt', 'w', encoding='utf-8') as f:
-              for ping, node in timed_nodes:
-                  f.write(node + '\n')
-          
-          print('✅ Резервный список успешно отсортирован и записан!')
+          # ЗАЩИТА: Записываем файл только если в нем реально есть проверенные сервера!
+          if len(timed_nodes) > 0:
+              with open('karing_reserve_final.txt', 'w', encoding='utf-8') as f:
+                  for ping, node in timed_nodes:
+                      f.write(node + '\n')
+              print('✅ Резервный список успешно отсортировал и записал серверов:', len(timed_nodes))
+          else:
+              print('❌ Ошибка: Список пуст, отмена перезаписи файла!')
+              sys.exit(1)
           "
 
       - name: Жесткое принудительное сохранение файлов на сайт

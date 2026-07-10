@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Скачивание, декодирование и жесткая сортировка прокси
+      - name: Скачивание трех новых файлов, объединение и сортировка прокси
         run: |
           python -c "
           import urllib.request
@@ -30,48 +30,33 @@ jobs:
           import time
           import re
           import sys
-          import base64
 
-          content = ''
+          # Новые актуальные адреса файлов в репозитории igareck
           urls = [
               'https://githubusercontent.com',
-              'https://githack.com'
+              'https://githubusercontent.com',
+              'https://githubusercontent.com'
           ]
 
-          print('[+] Скачиваю оригинальный файл прокси...')
+          raw_content = ''
+          print('[+] Скачиваю три новых файла прокси (Shadowsocks, Hysteria2, Vmess)...')
+          
           for url in urls:
               try:
                   req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
                   with urllib.request.urlopen(req, timeout=10) as response:
-                      content = response.read().decode('utf-8', errors='ignore').strip()
-                  if content:
-                      break
-              except Exception:
-                  continue
-
-          if not content:
-              print('❌ Ошибка: Не удалось скачать файл!')
-              sys.exit(1)
-
-          # ПРОВЕРКА И ДЕКОДИРОВАНИЕ BASE64
-          # Если в тексте нет привычных признаков ссылок, но есть признаки Base64 шифра
-          if '://' not in content and (len(content) % 4 == 0 or re.match('^[A-Za-z0-9+/=]+$', content)):
-              print('[+] Обнаружен зашифрованный Base64 формат! Расшифровываю...')
-              try:
-                  # Добавляем падинг, если он потерялся при копировании
-                  missing_padding = len(content) % 4
-                  if missing_padding:
-                      content += '=' * (4 - missing_padding)
-                  decoded_bytes = base64.b64decode(content)
-                  content = decoded_bytes.decode('utf-8', errors='ignore')
+                      file_text = response.read().decode('utf-8', errors='ignore')
+                      if file_text:
+                          raw_content += '\n' + file_text
+                          print(f'✅ Успешно скачан файл: {url.split(\"/\")[-1]}')
               except Exception as e:
-                  print('⚠️ Ошибка декодирования Base64, пробую работать как с текстом:', e)
+                  print(f'⚠️ Не удалось скачать файл {url.split(\"/\")[-1]}: {e}')
 
-          lines = content.split('\n')
+          lines = raw_content.split('\n')
           valid_nodes = []
           timed_nodes = []
 
-          # Ищем прокси-протоколы в расшифрованном тексте
+          # Извлекаем только чистые ссылки прокси
           for line in lines:
               line = line.strip().replace('\r', '')
               if line and any(proto in line for proto in ['ss://', 'vless://', 'vmess://', 'trojan://', 'tuic://', 'hysteria2://']):
@@ -79,10 +64,12 @@ jobs:
                   if match_url:
                       valid_nodes.append(match_url.group(0))
 
-          print(f'[+] Успешно найдено и извлечено чистых прокси: {len(valid_nodes)}')
+          # Убираем дубликаты, если они есть
+          valid_nodes = list(set(valid_nodes))
+          print(f'[+] Всего уникальных прокси из трех файлов найдено: {len(valid_nodes)}')
 
           if len(valid_nodes) == 0:
-              print('❌ КРИТИЧЕСКАЯ ОШИБКА: Ссылки внутри файла отсутствуют! Отмена.')
+              print('❌ КРИТИЧЕСКАЯ ОШИБКА: Все три файла оказались пустыми! Отмена.')
               sys.exit(1)
 
           # Скоростная проверка портов через сокеты Python
@@ -106,15 +93,15 @@ jobs:
               else:
                   timed_nodes.append((9998, node))
 
-          # Сортировка по пингу: быстрые наверх!
+          # Сортировка по пингу: самые шустрые наверх!
           timed_nodes.sort(key=lambda x: x)
 
-          # Записываем готовый отсортированный файл подписки в открытом, чистом виде
+          # Записываем готовый чистый список подписки
           if len(timed_nodes) > 0:
               with open('karing_reserve_final.txt', 'w', encoding='utf-8') as f:
                   for ping, node in timed_nodes:
                       f.write(node + '\n')
-              print(f'✅ Файл успешно расшифрован, отсортирован и сохранен! Количество: {len(timed_nodes)}')
+              print(f'✅ Резервный файл успешно собран и отсортирован! Количество живых серверов: {len(timed_nodes)}')
           else:
               sys.exit(1)
           "
@@ -124,6 +111,6 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add karing_reserve_final.txt
-          git commit -m "Автоматическое декодирование и сортировка Shadowsocks" --allow-empty
+          git commit -m "Сборка микса из трех новых файлов Shadowsocks и Hysteria" --allow-empty
           git pull origin main --rebase
           git push origin main

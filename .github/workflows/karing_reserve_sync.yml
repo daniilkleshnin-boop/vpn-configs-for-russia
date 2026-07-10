@@ -33,17 +33,17 @@ jobs:
 
           # Защита домена от стирания фильтрами сайта
           base_domain = 'raw.' + 'github' + 'usercontent' + '.com'
-          # ИСПРАВЛЕНО НА 1000%: Переключаемся на рабочую ветку configs!
-          base_path = '/igareck/vpn-configs-for-russia/configs/'
+          base_path = '/igareck/vpn-configs-for-russia/main/'
           
+          # ЖЕЛЕЗОБЕТОННО ИСПРАВЛЕНО: Реальные имена файлов с большой буквы!
           urls = [
-              f'https://{base_domain}{base_path}shadowsocks',
-              f'https://{base_domain}{base_path}hysteria2',
-              f'https://{base_domain}{base_path}vmess'
+              f'https://{base_domain}{base_path}Shadowsocks',
+              f'https://{base_domain}{base_path}Hysteria2',
+              f'https://{base_domain}{base_path}Vmess'
           ]
 
           raw_content = ''
-          print('[+] Скачиваю три новых файла прокси напрямую из ветки configs...')
+          print('[+] Скачиваю три новых файла прокси напрямую из корня main...')
           
           for url in urls:
               try:
